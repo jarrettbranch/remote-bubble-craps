@@ -4,6 +4,7 @@ export type ClientMessage =
   | {
       type: "authenticate";
       accessToken: string;
+      displayName?: string;
     }
   | {
       type: "join";

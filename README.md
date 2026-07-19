@@ -149,7 +149,7 @@ Users can click `Buy 2,000 Play Chips` to add configured play chips to their ban
 
 SQLite stores registered users, chip balances, cumulative play buy-ins, the latest table snapshot and the append-only event log.
 
-Players can edit their table display name after joining. In Entra mode, the first name is taken from token claims, but the in-app table name is stored in SQLite and used for chat, chip stacks and the player roster. Entra mode also shows a sign-out button in the account panel.
+Players can edit their table display name after joining. In Entra mode, the first name is taken from token claims in this order: `displayName`, `display_name`, `name`, `preferred_username`, then `email`. The in-app table name is stored in SQLite and used for chat, chip stacks and the player roster. Entra mode also shows a sign-out button in the account panel.
 
 The browser UI presents a craps-table layout. Players bet by dragging virtual chips from the rack onto board spots; the backend still validates every bet. Chip stacks on the table are grouped by short player names so all connected players can see each other's active bets.
 

@@ -212,7 +212,11 @@ export function App() {
     acquireAccessToken(authClient, authAccount)
       .then((accessToken) => {
         if (!cancelled) {
-          send({ type: "authenticate", accessToken });
+          send({
+            type: "authenticate",
+            accessToken,
+            displayName: displayNameFromAccount(authAccount)
+          });
         }
       })
       .catch((error: unknown) => {
@@ -1507,6 +1511,27 @@ function signedChips(value: number): string {
 
 function formatCountdown(ms: number): string {
   return `${Math.ceil(ms / 1000)}s`;
+}
+
+function displayNameFromAccount(account: AccountInfo): string | undefined {
+  const claims = account.idTokenClaims as Record<string, unknown> | undefined;
+  return firstStringClaim([
+    claims?.displayName,
+    claims?.display_name,
+    claims?.name,
+    account.name,
+    account.username
+  ]);
+}
+
+function firstStringClaim(values: unknown[]): string | undefined {
+  for (const value of values) {
+    if (typeof value === "string" && value.trim()) {
+      return value.trim();
+    }
+  }
+
+  return undefined;
 }
 
 async function acquireAccessToken(

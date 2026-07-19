@@ -31,6 +31,8 @@ interface JwtHeader {
 
 interface JwtPayload {
   aud?: string | string[];
+  displayName?: string;
+  display_name?: string;
   exp?: number;
   iat?: number;
   iss?: string;
@@ -108,11 +110,7 @@ export class EntraJwtVerifier implements AuthVerifier {
       throw new Error("Authentication token is missing a subject.");
     }
 
-    const displayName =
-      payload.name ??
-      payload.preferred_username ??
-      payload.email ??
-      "Player";
+    const displayName = displayNameFromClaims(payload);
 
     return {
       provider: "entra",
@@ -183,6 +181,24 @@ function audienceMatches(audience: string | string[] | undefined, expected: stri
   }
 
   return audience === expected;
+}
+
+export function displayNameFromClaims(payload: {
+  displayName?: string;
+  display_name?: string;
+  name?: string;
+  preferred_username?: string;
+  email?: string;
+}): string {
+  return (
+    [
+      payload.displayName,
+      payload.display_name,
+      payload.name,
+      payload.preferred_username,
+      payload.email
+    ].find((value) => typeof value === "string" && value.trim().length > 0) ?? "Player"
+  );
 }
 
 function verifyJwtSignature(

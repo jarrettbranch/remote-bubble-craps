@@ -200,7 +200,7 @@ export class BubbleCrapsServer {
   private handleMessage(socket: WebSocket, message: ClientMessage): void {
     switch (message.type) {
       case "authenticate":
-        void this.authenticate(socket, message.accessToken);
+        void this.authenticate(socket, message.accessToken, message.displayName);
         break;
       case "join":
         this.join(socket, message.displayName);
@@ -231,7 +231,11 @@ export class BubbleCrapsServer {
     }
   }
 
-  private async authenticate(socket: WebSocket, accessToken: string): Promise<void> {
+  private async authenticate(
+    socket: WebSocket,
+    accessToken: string,
+    displayNameHint?: string
+  ): Promise<void> {
     if (this.config.authMode !== "entra" || !this.authVerifier) {
       this.sendError(socket, "Entra authentication is not enabled.");
       return;
@@ -249,7 +253,10 @@ export class BubbleCrapsServer {
 
     try {
       const identity = await this.authVerifier.verify(accessToken);
-      const cleanName = sanitizeDisplayName(identity.displayName) || "Player";
+      const cleanName =
+        sanitizeDisplayName(displayNameHint ?? "") ||
+        sanitizeDisplayName(identity.displayName) ||
+        "Player";
       const user = this.eventStore.getOrCreateUserForIdentity({
         authProvider: identity.provider,
         authSubject: identity.subject,

@@ -297,7 +297,13 @@ describe("BubbleCrapsServer integration", () => {
     });
 
     await waitForOpen(socket);
-    socket.send(JSON.stringify({ type: "authenticate", accessToken: "mock-token" }));
+    socket.send(
+      JSON.stringify({
+        type: "authenticate",
+        accessToken: "mock-token",
+        displayName: "Browser Entra Name"
+      })
+    );
 
     const authenticated = await waitForMessage(
       messages,
@@ -311,7 +317,8 @@ describe("BubbleCrapsServer integration", () => {
       (message) =>
         message.type === "state" &&
         message.state.players[playerId]?.balance === 2100 &&
-        message.state.players[playerId]?.totalBuyIns === 2000
+        message.state.players[playerId]?.totalBuyIns === 2000 &&
+        message.state.players[playerId]?.displayName === "Browser Entra Name"
     );
 
     socket.close();
@@ -322,7 +329,13 @@ describe("BubbleCrapsServer integration", () => {
     });
 
     await waitForOpen(socket);
-    socket.send(JSON.stringify({ type: "authenticate", accessToken: "mock-token" }));
+    socket.send(
+      JSON.stringify({
+        type: "authenticate",
+        accessToken: "mock-token",
+        displayName: "Browser Entra Name"
+      })
+    );
 
     const reauthenticated = await waitForMessage(
       reconnectMessages,
