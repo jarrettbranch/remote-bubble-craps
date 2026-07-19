@@ -234,6 +234,10 @@ button:disabled {
   gap: 8px;
 }
 
+.bet-list {
+  gap: 6px;
+}
+
 .player-roster {
   align-content: start;
   height: clamp(178px, 24vh, 236px);
@@ -330,12 +334,12 @@ button:disabled {
 
 .account-summary {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .name-edit-form {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .name-edit-form label {
@@ -345,15 +349,15 @@ button:disabled {
 
 .name-edit-row {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 46px;
-  gap: 8px;
+  grid-template-columns: minmax(0, 1fr) 40px;
+  gap: 6px;
 }
 
 .name-edit-row button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 42px;
+  min-height: 36px;
   border-radius: 6px;
   color: #17140f;
   background: #f3c969;
@@ -364,7 +368,7 @@ button:disabled {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   color: #d9d0bd;
 }
 
@@ -385,7 +389,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 38px;
   border-radius: 6px;
   color: #17140f;
   background: #f3c969;
@@ -399,7 +403,7 @@ button:disabled {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 42px;
+  min-height: 38px;
   border-radius: 6px;
   color: #f6f2e8;
   background: rgba(255, 255, 255, 0.12);
@@ -411,14 +415,20 @@ button:disabled {
 .layout-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(300px, 0.58fr);
-  gap: 16px;
+  gap: 12px;
   align-items: start;
+}
+
+.sidebar-stack {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  min-width: 0;
 }
 
 .table-stage {
   display: grid;
   gap: 16px;
-  grid-row: span 3;
   min-width: 0;
 }
 
@@ -886,10 +896,23 @@ button:disabled {
   padding: 16px;
 }
 
+.account-panel,
+.control-panel,
+.bets-panel {
+  padding: 12px;
+}
+
 .panel-header {
   justify-content: space-between;
   gap: 12px;
   margin-bottom: 14px;
+}
+
+.account-panel .panel-header,
+.control-panel .panel-header,
+.bets-panel .panel-header {
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .lock-badge {
@@ -909,14 +932,14 @@ button:disabled {
 
 .chip-rack {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(58px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(48px, 1fr));
+  gap: 7px;
 }
 
 .custom-chip-control {
   display: grid;
   grid-column: 1 / -1;
-  gap: 6px;
+  gap: 5px;
 }
 
 .custom-chip-control label {
@@ -928,32 +951,33 @@ button:disabled {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
 }
 
 .custom-chip-row input {
-  min-height: 38px;
+  min-height: 34px;
 }
 
 .chip-button {
   display: grid;
   place-items: center;
   justify-self: center;
-  width: 58px;
+  width: 48px;
   aspect-ratio: 1;
-  border: 5px dashed currentColor;
+  border: 4px dashed currentColor;
   border-radius: 50%;
   color: #f6f2e8;
   background: #d94f47;
   box-shadow:
-    inset 0 0 0 5px rgba(255, 255, 255, 0.18),
+    inset 0 0 0 4px rgba(255, 255, 255, 0.18),
     0 10px 22px rgba(0, 0, 0, 0.24);
+  font-size: 0.82rem;
   font-weight: 900;
   cursor: grab;
 }
 
 .custom-chip {
-  width: 54px;
+  width: 48px;
 }
 
 .chip-button:active {
@@ -995,6 +1019,7 @@ button:disabled {
 
 .bet-row {
   grid-template-columns: 1fr auto;
+  padding: 8px;
 }
 
 .bet-row small,
@@ -1005,11 +1030,11 @@ button:disabled {
 .remove-bet-button {
   grid-column: 1 / -1;
   justify-self: start;
-  min-height: 28px;
+  min-height: 24px;
   border-radius: 5px;
   color: #f6f2e8;
   background: rgba(255, 255, 255, 0.12);
-  padding: 0 10px;
+  padding: 0 8px;
   cursor: pointer;
 }
 

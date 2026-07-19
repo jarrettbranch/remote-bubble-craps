@@ -533,85 +533,87 @@ export function App() {
           </div>
         </section>
 
-        {currentPlayer ? (
-          <section className="account-panel">
+        <aside className="sidebar-stack">
+          {currentPlayer ? (
+            <section className="account-panel">
+              <div className="panel-header">
+                <div>
+                  <h2>Account</h2>
+                  <p>{currentPlayer.displayName}</p>
+                </div>
+                <UserRound size={22} />
+              </div>
+              <AccountPanel
+                player={currentPlayer}
+                authEnabled={authEnabled}
+                authBusy={authBusy}
+                onRebuy={rebuy}
+                onUpdateDisplayName={updateDisplayName}
+                onSignOut={signOut}
+              />
+            </section>
+          ) : null}
+
+          <section className="control-panel">
             <div className="panel-header">
               <div>
-                <h2>Account</h2>
-                <p>{currentPlayer.displayName}</p>
+                <h2>Chip Rack</h2>
+                <p>{chips(selectedChip)} selected</p>
               </div>
-              <UserRound size={22} />
+              <div className={`lock-badge ${state?.betting.status ?? "locked"}`}>
+                {state?.betting.status === "open" ? (
+                  <UnlockKeyhole size={18} />
+                ) : (
+                  <Lock size={18} />
+                )}
+                {state?.betting.status === "open"
+                  ? formatCountdown(countdownMs)
+                  : "Locked"}
+              </div>
             </div>
-            <AccountPanel
-              player={currentPlayer}
-              authEnabled={authEnabled}
-              authBusy={authBusy}
-              onRebuy={rebuy}
-              onUpdateDisplayName={updateDisplayName}
-              onSignOut={signOut}
+
+            <ChipRack
+              selectedChip={selectedChip}
+              onSelect={setSelectedChip}
+              disabled={!currentPlayer || connection !== "connected"}
             />
           </section>
-        ) : null}
 
-        <section className="control-panel">
-          <div className="panel-header">
-            <div>
-              <h2>Chip Rack</h2>
-              <p>{chips(selectedChip)} selected</p>
-            </div>
-            <div className={`lock-badge ${state?.betting.status ?? "locked"}`}>
-              {state?.betting.status === "open" ? (
-                <UnlockKeyhole size={18} />
-              ) : (
-                <Lock size={18} />
-              )}
-              {state?.betting.status === "open"
-                ? formatCountdown(countdownMs)
-                : "Locked"}
-            </div>
-          </div>
-
-          <ChipRack
-            selectedChip={selectedChip}
-            onSelect={setSelectedChip}
-            disabled={!currentPlayer || connection !== "connected"}
-          />
-        </section>
-
-        <section className="bets-panel">
-          <div className="panel-header">
-            <div>
-              <h2>Your Bets</h2>
-              <p>{chips(activePlayerBets.reduce((sum, bet) => sum + bet.amount, 0))} working</p>
-            </div>
-            <CircleDollarSign size={22} />
-          </div>
-          <BetList
-            bets={activePlayerBets}
-            canRemove={state?.betting.status === "open"}
-            onRemoveBet={removeExistingBet}
-          />
-        </section>
-
-        <section className="history-panel">
-          <div className="panel-header">
-            <div>
-              <h2>Recent Rolls</h2>
-              <p>{state?.history.length ?? 0} shown</p>
-            </div>
-            <Timer size={22} />
-          </div>
-          <div className="history-list">
-            {[...(state?.history ?? [])].reverse().map((roll) => (
-              <div className="history-row" key={roll.rollId}>
-                <span>{roll.die1} + {roll.die2}</span>
-                <strong>{roll.total}</strong>
-                <span>{roll.pointAfter ? `Point ${roll.pointAfter}` : "Point off"}</span>
+          <section className="bets-panel">
+            <div className="panel-header">
+              <div>
+                <h2>Your Bets</h2>
+                <p>{chips(activePlayerBets.reduce((sum, bet) => sum + bet.amount, 0))} working</p>
               </div>
-            ))}
-            {state?.history.length === 0 ? <EmptyText label="No rolls yet" /> : null}
-          </div>
-        </section>
+              <CircleDollarSign size={22} />
+            </div>
+            <BetList
+              bets={activePlayerBets}
+              canRemove={state?.betting.status === "open"}
+              onRemoveBet={removeExistingBet}
+            />
+          </section>
+
+          <section className="history-panel">
+            <div className="panel-header">
+              <div>
+                <h2>Recent Rolls</h2>
+                <p>{state?.history.length ?? 0} shown</p>
+              </div>
+              <Timer size={22} />
+            </div>
+            <div className="history-list">
+              {[...(state?.history ?? [])].reverse().map((roll) => (
+                <div className="history-row" key={roll.rollId}>
+                  <span>{roll.die1} + {roll.die2}</span>
+                  <strong>{roll.total}</strong>
+                  <span>{roll.pointAfter ? `Point ${roll.pointAfter}` : "Point off"}</span>
+                </div>
+              ))}
+              {state?.history.length === 0 ? <EmptyText label="No rolls yet" /> : null}
+            </div>
+          </section>
+        </aside>
       </div>
     </main>
   );
