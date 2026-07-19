@@ -95,6 +95,7 @@ AUTH_MODE=entra
 ENTRA_AUTHORITY=https://your-external-tenant.ciamlogin.com/your-external-tenant-id/v2.0
 ENTRA_AUDIENCE=api://your-backend-app-id-uri-or-client-id
 VITE_AUTH_MODE=entra
+VITE_ALLOWED_HOSTS=your-domain.com
 VITE_ENTRA_CLIENT_ID=your-spa-client-id
 VITE_ENTRA_AUTHORITY=https://your-external-tenant.ciamlogin.com/your-external-tenant-id/v2.0
 VITE_ENTRA_REDIRECT_URI=https://your-domain.com

@@ -27,6 +27,7 @@ services:
       context: .
       dockerfile: apps/web/Dockerfile
     environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
       VITE_WS_URL: ${VITE_WS_URL}
       VITE_AUTH_MODE: ${VITE_AUTH_MODE:-entra}
       VITE_ENTRA_CLIENT_ID: ${VITE_ENTRA_CLIENT_ID}
