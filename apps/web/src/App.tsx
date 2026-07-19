@@ -748,14 +748,16 @@ function ChatPanel({
   onChatTextChange: (value: string) => void;
   onSubmit: (event: FormEvent) => void;
 }) {
-  const players = Object.values(state?.players ?? {}).sort((a, b) => a.joinedAt - b.joinedAt);
+  const players = Object.values(state?.players ?? {})
+    .filter((player) => player.connected)
+    .sort((a, b) => a.joinedAt - b.joinedAt);
 
   return (
     <section className="table-chat-panel">
       <div className="panel-header">
         <div>
           <h2>Table Chat</h2>
-          <p>{players.length} players</p>
+          <p>{players.length} online</p>
         </div>
         <MessageSquare size={22} />
       </div>
@@ -796,7 +798,7 @@ function PlayerRoster({
   shooterId: string | null;
 }) {
   if (players.length === 0) {
-    return <EmptyText label="No players yet" />;
+    return <EmptyText label="No online players" />;
   }
 
   return (
