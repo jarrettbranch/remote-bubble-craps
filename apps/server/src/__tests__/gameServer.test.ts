@@ -181,8 +181,8 @@ describe("BubbleCrapsServer integration", () => {
     const databasePath = join(mkdtempSync(join(tmpdir(), "bubble-craps-")), "test.sqlite");
     const config = {
       ...testConfig(databasePath),
-      bettingCountdownMs: 30,
-      rollTimeoutMs: 30
+      bettingCountdownMs: 100,
+      rollTimeoutMs: 100
     };
 
     server = new BubbleCrapsServer({

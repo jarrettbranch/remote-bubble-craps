@@ -38,6 +38,7 @@ interface JwtPayload {
   nbf?: number;
   oid?: string;
   preferred_username?: string;
+  scp?: string;
   email?: string;
   sub?: string;
   tid?: string;
@@ -83,6 +84,12 @@ export class EntraJwtVerifier implements AuthVerifier {
     }
 
     if (!audienceMatches(payload.aud, this.audience)) {
+      console.warn("Authentication token audience mismatch.", {
+        expectedAudience: this.audience,
+        tokenAudience: payload.aud,
+        tokenIssuer: payload.iss,
+        tokenScopes: typeof payload.scp === "string" ? payload.scp : undefined
+      });
       throw new Error("Authentication token audience is not valid.");
     }
 

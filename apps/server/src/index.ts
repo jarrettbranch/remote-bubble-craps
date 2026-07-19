@@ -9,6 +9,13 @@ const device = new SimulatedDiceDevice({
 
 const server = new BubbleCrapsServer({ config, device });
 
+console.log("Bubble Craps auth config", {
+  authMode: config.authMode,
+  entraAuthority: config.entraAuthority,
+  entraAudience: config.entraAudience,
+  entraIssuer: config.entraIssuer
+});
+
 server
   .listen()
   .then((port) => {
