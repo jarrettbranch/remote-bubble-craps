@@ -141,6 +141,7 @@ small,
 .error-banner,
 .table-notice,
 .join-panel,
+.account-panel,
 .control-panel,
 .bets-panel,
 .history-panel,
@@ -330,7 +331,6 @@ button:disabled {
 .account-summary {
   display: grid;
   gap: 10px;
-  margin-top: 16px;
 }
 
 .name-edit-form {

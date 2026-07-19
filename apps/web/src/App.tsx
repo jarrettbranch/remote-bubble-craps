@@ -533,6 +533,26 @@ export function App() {
           </div>
         </section>
 
+        {currentPlayer ? (
+          <section className="account-panel">
+            <div className="panel-header">
+              <div>
+                <h2>Account</h2>
+                <p>{currentPlayer.displayName}</p>
+              </div>
+              <UserRound size={22} />
+            </div>
+            <AccountPanel
+              player={currentPlayer}
+              authEnabled={authEnabled}
+              authBusy={authBusy}
+              onRebuy={rebuy}
+              onUpdateDisplayName={updateDisplayName}
+              onSignOut={signOut}
+            />
+          </section>
+        ) : null}
+
         <section className="control-panel">
           <div className="panel-header">
             <div>
@@ -556,17 +576,6 @@ export function App() {
             onSelect={setSelectedChip}
             disabled={!currentPlayer || connection !== "connected"}
           />
-
-          {currentPlayer ? (
-            <AccountPanel
-              player={currentPlayer}
-              authEnabled={authEnabled}
-              authBusy={authBusy}
-              onRebuy={rebuy}
-              onUpdateDisplayName={updateDisplayName}
-              onSignOut={signOut}
-            />
-          ) : null}
         </section>
 
         <section className="bets-panel">
