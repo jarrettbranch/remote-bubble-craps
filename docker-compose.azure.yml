@@ -1,0 +1,61 @@
+services:
+  server:
+    build:
+      context: .
+      dockerfile: apps/server/Dockerfile
+    environment:
+      PORT: ${PORT:-8080}
+      HOST: ${HOST:-0.0.0.0}
+      DATABASE_PATH: ${DATABASE_PATH:-/app/data/bubble-craps.sqlite}
+      AUTH_MODE: ${AUTH_MODE:-entra}
+      ENTRA_AUTHORITY: ${ENTRA_AUTHORITY}
+      ENTRA_AUDIENCE: ${ENTRA_AUDIENCE}
+      ENTRA_ISSUER: ${ENTRA_ISSUER:-}
+      BETTING_COUNTDOWN_SECONDS: ${BETTING_COUNTDOWN_SECONDS:-10}
+      STARTING_BALANCE: ${STARTING_BALANCE:-1000}
+      SIMULATED_ROLL_DELAY_MS: ${SIMULATED_ROLL_DELAY_MS:-900}
+      REBUY_CHIPS: ${REBUY_CHIPS:-2000}
+      ROLL_TIMEOUT_SECONDS: ${ROLL_TIMEOUT_SECONDS:-30}
+    volumes:
+      - /opt/bubble-craps/data:/app/data
+    expose:
+      - "8080"
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile
+    environment:
+      VITE_WS_URL: ${VITE_WS_URL}
+      VITE_AUTH_MODE: ${VITE_AUTH_MODE:-entra}
+      VITE_ENTRA_CLIENT_ID: ${VITE_ENTRA_CLIENT_ID}
+      VITE_ENTRA_AUTHORITY: ${VITE_ENTRA_AUTHORITY}
+      VITE_ENTRA_REDIRECT_URI: ${VITE_ENTRA_REDIRECT_URI}
+      VITE_ENTRA_API_SCOPE: ${VITE_ENTRA_API_SCOPE}
+      VITE_REBUY_CHIPS: ${VITE_REBUY_CHIPS:-2000}
+    expose:
+      - "5173"
+    restart: unless-stopped
+    depends_on:
+      - server
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      DOMAIN_NAME: ${DOMAIN_NAME}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    restart: unless-stopped
+    depends_on:
+      - web
+      - server
+
+volumes:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,9 @@
+{$DOMAIN_NAME} {
+  encode gzip
+
+  reverse_proxy /ws server:8080
+  reverse_proxy /health server:8080
+  reverse_proxy /events server:8080
+
+  reverse_proxy web:5173
+}

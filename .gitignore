@@ -1,0 +1,11 @@
+node_modules/
+dist/
+coverage/
+.vite/
+.env
+.env.azure
+data/*.sqlite
+data/*.sqlite-*
+**/data/*.sqlite
+**/data/*.sqlite-*
+apps/web/dist/
