@@ -56,6 +56,9 @@ const authEnabled = authMode === "entra";
 const entraClientId = import.meta.env.VITE_ENTRA_CLIENT_ID ?? "";
 const entraAuthority = import.meta.env.VITE_ENTRA_AUTHORITY ?? "";
 const entraRedirectUri = import.meta.env.VITE_ENTRA_REDIRECT_URI ?? window.location.origin;
+const entraPopupRedirectUri =
+  import.meta.env.VITE_ENTRA_POPUP_REDIRECT_URI ??
+  new URL("/auth-callback.html", entraRedirectUri).toString();
 const entraApiScope = import.meta.env.VITE_ENTRA_API_SCOPE ?? "";
 const rebuyChips = Number(import.meta.env.VITE_REBUY_CHIPS ?? 2000);
 const CHIP_VALUES = [1, 5, 10, 25, 100] as const;
@@ -124,7 +127,7 @@ export function App() {
       auth: {
         clientId: entraClientId,
         authority: entraAuthority,
-        redirectUri: entraRedirectUri
+        redirectUri: entraPopupRedirectUri
       },
       cache: {
         cacheLocation: BrowserCacheLocation.LocalStorage
@@ -303,7 +306,8 @@ export function App() {
     setAuthBusy(true);
     try {
       const result = await authClient.loginPopup({
-        scopes: [entraApiScope]
+        scopes: [entraApiScope],
+        redirectUri: entraPopupRedirectUri
       });
       authClient.setActiveAccount(result.account);
       setAuthAccount(result.account);
@@ -1389,7 +1393,8 @@ async function acquireAccessToken(
   } catch {
     const result = await authClient.acquireTokenPopup({
       account,
-      scopes: [entraApiScope]
+      scopes: [entraApiScope],
+      redirectUri: entraPopupRedirectUri
     });
     return result.accessToken;
   }

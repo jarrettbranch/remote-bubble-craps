@@ -99,11 +99,12 @@ VITE_ALLOWED_HOSTS=your-domain.com
 VITE_ENTRA_CLIENT_ID=your-spa-client-id
 VITE_ENTRA_AUTHORITY=https://your-external-tenant.ciamlogin.com/your-external-tenant-id/v2.0
 VITE_ENTRA_REDIRECT_URI=https://your-domain.com
+VITE_ENTRA_POPUP_REDIRECT_URI=https://your-domain.com/auth-callback.html
 VITE_ENTRA_API_SCOPE=api://your-backend-app-id-uri-or-client-id/access_as_user
 VITE_WS_URL=wss://your-domain.com/ws
 ```
 
-If your Entra issuer differs from OIDC discovery, set `ENTRA_ISSUER` explicitly.
+Register both `VITE_ENTRA_REDIRECT_URI` and `VITE_ENTRA_POPUP_REDIRECT_URI` as single-page application redirect URIs in Entra. If your Entra issuer differs from OIDC discovery, set `ENTRA_ISSUER` explicitly.
 
 ## Configuration
 
@@ -128,6 +129,7 @@ Copy `.env.example` to `.env` for local shell usage or edit `docker-compose.yml`
 | `VITE_ENTRA_CLIENT_ID` | empty | Entra SPA client ID |
 | `VITE_ENTRA_AUTHORITY` | empty | Entra authority used by MSAL |
 | `VITE_ENTRA_REDIRECT_URI` | current origin | Registered SPA redirect URI |
+| `VITE_ENTRA_POPUP_REDIRECT_URI` | `/auth-callback.html` under `VITE_ENTRA_REDIRECT_URI` | Dedicated MSAL popup callback URI |
 | `VITE_ENTRA_API_SCOPE` | empty | Backend API scope requested by the frontend |
 | `VITE_REBUY_CHIPS` | `2000` | Rebuy button display amount |
 
