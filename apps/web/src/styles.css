@@ -333,6 +333,33 @@ button:disabled {
   margin-top: 16px;
 }
 
+.name-edit-form {
+  display: grid;
+  gap: 6px;
+}
+
+.name-edit-form label {
+  color: #cfc5ad;
+  font-size: 0.78rem;
+}
+
+.name-edit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 46px;
+  gap: 8px;
+}
+
+.name-edit-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  border-radius: 6px;
+  color: #17140f;
+  background: #f3c969;
+  cursor: pointer;
+}
+
 .account-summary > div {
   display: flex;
   align-items: center;
@@ -362,6 +389,20 @@ button:disabled {
   border-radius: 6px;
   color: #17140f;
   background: #f3c969;
+  padding: 0 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+
+.sign-out-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border-radius: 6px;
+  color: #f6f2e8;
+  background: rgba(255, 255, 255, 0.12);
   padding: 0 14px;
   font-weight: 750;
   cursor: pointer;
@@ -412,6 +453,25 @@ button:disabled {
     #0f684f;
   background-size: 64px 64px;
   padding: 12px;
+}
+
+.roll-result-overlay {
+  position: absolute;
+  z-index: 12;
+  left: 50%;
+  top: 46%;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  color: #ff1f2f;
+  text-align: center;
+  font-size: clamp(2.4rem, 7vw, 5.4rem);
+  font-weight: 950;
+  line-height: 1;
+  text-transform: uppercase;
+  text-shadow:
+    0 3px 0 rgba(255, 255, 255, 0.52),
+    0 12px 30px rgba(0, 0, 0, 0.42);
+  animation: roll-result-fade 2.8s ease-out forwards;
 }
 
 .table-meta {
@@ -1008,6 +1068,24 @@ button:disabled {
   place-items: center;
   border: 1px dashed rgba(255, 255, 255, 0.16);
   border-radius: 8px;
+}
+
+@keyframes roll-result-fade {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.86);
+  }
+
+  12%,
+  62% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.08);
+  }
 }
 
 @media (max-width: 1180px) {

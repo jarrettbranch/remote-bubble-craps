@@ -177,6 +177,40 @@ describe("BubbleCrapsServer integration", () => {
     expect(server.recentEvents().map((event) => event.type)).toContain("chips_rebought");
   });
 
+  it("updates a player's table display name", async () => {
+    const databasePath = join(mkdtempSync(join(tmpdir(), "bubble-craps-")), "test.sqlite");
+    const config = testConfig(databasePath);
+
+    server = new BubbleCrapsServer({
+      config,
+      device: new FixedDiceDevice(3, 4)
+    });
+    await server.listen(0);
+
+    socket = new WebSocket(server.url);
+    const messages: ServerMessage[] = [];
+    socket.on("message", (data) => {
+      messages.push(JSON.parse(data.toString()) as ServerMessage);
+    });
+
+    await waitForOpen(socket);
+    socket.send(JSON.stringify({ type: "join", displayName: "Unknown" }));
+
+    const joined = await waitForMessage(messages, (message) => message.type === "joined");
+    const playerId = joined.type === "joined" ? joined.playerId : "";
+
+    socket.send(JSON.stringify({ type: "updateDisplayName", displayName: "Avery" }));
+
+    await waitForMessage(
+      messages,
+      (message) =>
+        message.type === "state" &&
+        message.state.players[playerId]?.displayName === "Avery"
+    );
+
+    expect(server.recentEvents().map((event) => event.type)).toContain("display_name_updated");
+  });
+
   it("rotates shooter and preserves bets when the shooter times out", async () => {
     const databasePath = join(mkdtempSync(join(tmpdir(), "bubble-craps-")), "test.sqlite");
     const config = {

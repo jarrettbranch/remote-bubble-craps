@@ -6,8 +6,10 @@ import {
 import {
   CircleDollarSign,
   Dice5,
+  LogOut,
   Lock,
   MessageSquare,
+  Save,
   RadioTower,
   Send,
   Timer,
@@ -335,6 +337,35 @@ export function App() {
     send({ type: "rebuyChips" });
   }
 
+  function updateDisplayName(nextDisplayName: string) {
+    send({ type: "updateDisplayName", displayName: nextDisplayName });
+  }
+
+  async function signOut() {
+    send({ type: "leave" });
+    setPlayerId(null);
+    setAuthAccount(null);
+
+    if (!authClient || !authAccount) {
+      return;
+    }
+
+    setAuthBusy(true);
+    try {
+      await authClient.logoutPopup({
+        account: authAccount,
+        mainWindowRedirectUri: window.location.href,
+        postLogoutRedirectUri: entraPopupRedirectUri
+      });
+      authClient.setActiveAccount(null);
+      setError(null);
+    } catch (error) {
+      setError(errorMessage(error));
+    } finally {
+      setAuthBusy(false);
+    }
+  }
+
   function sendChat(event: FormEvent) {
     event.preventDefault();
     if (!chatText.trim()) {
@@ -424,6 +455,14 @@ export function App() {
         <section className="table-stage">
           <div className="table-rail">
             <div className="table-felt">
+              {state?.lastRoll ? (
+                <RollResultOverlay
+                  key={state.lastRoll.rollId}
+                  die1={state.lastRoll.die1}
+                  die2={state.lastRoll.die2}
+                />
+              ) : null}
+
               <div className="table-meta">
                 <Metric label="Shooter" value={shooter?.displayName ?? "Waiting"} />
                 <Metric label="Point" value={state?.point ? String(state.point) : "Off"} />
@@ -519,7 +558,14 @@ export function App() {
           />
 
           {currentPlayer ? (
-            <AccountPanel player={currentPlayer} onRebuy={rebuy} />
+            <AccountPanel
+              player={currentPlayer}
+              authEnabled={authEnabled}
+              authBusy={authBusy}
+              onRebuy={rebuy}
+              onUpdateDisplayName={updateDisplayName}
+              onSignOut={signOut}
+            />
           ) : null}
         </section>
 
@@ -588,17 +634,70 @@ function Metric({ label, value }: { label: string; value: string }) {
   );
 }
 
+function RollResultOverlay({
+  die1,
+  die2
+}: {
+  die1: number;
+  die2: number;
+}) {
+  return (
+    <div className="roll-result-overlay" aria-live="polite">
+      {rollResultLabel(die1, die2)}
+    </div>
+  );
+}
+
 function AccountPanel({
   player,
-  onRebuy
+  authEnabled,
+  authBusy,
+  onRebuy,
+  onUpdateDisplayName,
+  onSignOut
 }: {
   player: PlayerState;
+  authEnabled: boolean;
+  authBusy: boolean;
   onRebuy: () => void;
+  onUpdateDisplayName: (displayName: string) => void;
+  onSignOut: () => void;
 }) {
   const net = player.balance - player.totalBuyIns;
+  const [nameDraft, setNameDraft] = useState(player.displayName);
+
+  useEffect(() => {
+    setNameDraft(player.displayName);
+  }, [player.displayName]);
+
+  function submitName(event: FormEvent) {
+    event.preventDefault();
+    if (!nameDraft.trim() || nameDraft.trim() === player.displayName) {
+      return;
+    }
+    onUpdateDisplayName(nameDraft);
+  }
 
   return (
     <div className="account-summary">
+      <form className="name-edit-form" onSubmit={submitName}>
+        <label htmlFor="tableDisplayName">Table name</label>
+        <div className="name-edit-row">
+          <input
+            id="tableDisplayName"
+            value={nameDraft}
+            maxLength={32}
+            onChange={(event) => setNameDraft(event.target.value)}
+          />
+          <button
+            type="submit"
+            disabled={!nameDraft.trim() || nameDraft.trim() === player.displayName}
+            title="Save table name"
+          >
+            <Save size={18} />
+          </button>
+        </div>
+      </form>
       <div>
         <span>Play buy-ins</span>
         <strong>-{chips(player.totalBuyIns)}</strong>
@@ -611,6 +710,12 @@ function AccountPanel({
         <CircleDollarSign size={18} />
         Buy {chips(rebuyChips)}
       </button>
+      {authEnabled ? (
+        <button type="button" className="sign-out-button" onClick={onSignOut} disabled={authBusy}>
+          <LogOut size={18} />
+          Sign out
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -1365,6 +1470,19 @@ function layPayoutText(point: PointNumber): string {
     return "Wins 2:3";
   }
   return "Wins 5:6";
+}
+
+function rollResultLabel(die1: number, die2: number): string {
+  const total = die1 + die2;
+  if ((total === 4 || total === 6 || total === 8 || total === 10) && die1 === die2) {
+    return `Hard ${total}`;
+  }
+
+  if (total === 4 || total === 6 || total === 8 || total === 10) {
+    return `Easy ${total}`;
+  }
+
+  return String(total);
 }
 
 function chips(value: number): string {

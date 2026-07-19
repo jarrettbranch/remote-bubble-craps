@@ -149,6 +149,8 @@ Users can click `Buy 2,000 Play Chips` to add configured play chips to their ban
 
 SQLite stores registered users, chip balances, cumulative play buy-ins, the latest table snapshot and the append-only event log.
 
+Players can edit their table display name after joining. In Entra mode, the first name is taken from token claims, but the in-app table name is stored in SQLite and used for chat, chip stacks and the player roster. Entra mode also shows a sign-out button in the account panel.
+
 The browser UI presents a craps-table layout. Players bet by dragging virtual chips from the rack onto board spots; the backend still validates every bet. Chip stacks on the table are grouped by short player names so all connected players can see each other's active bets.
 
 Players can remove eligible bets while betting is open. The server refunds the stake and logs the removal. Established Pass Line and Don't Pass flat bets and moved Come contract bets cannot be removed.
@@ -245,6 +247,7 @@ Coverage includes:
 - Field, Place, Lay and Proposition bet settlement
 - eligible bet removal and contract-bet removal rejection
 - play-chip rebuy ledger updates
+- player table-name updates
 - shooter roll timeout without settling active bets
 - shooter rotation on seven-out
 - WebSocket integration path: join -> bet -> lock -> roll -> settlement

@@ -211,8 +211,14 @@ export class BubbleCrapsServer {
       case "removeBet":
         this.removeBet(socket, message.betId);
         break;
+      case "updateDisplayName":
+        this.updateDisplayName(socket, message.displayName);
+        break;
       case "requestRoll":
         void this.requestRoll(socket);
+        break;
+      case "leave":
+        this.leave(socket);
         break;
       case "rebuyChips":
         this.rebuyChips(socket);
@@ -387,6 +393,55 @@ export class BubbleCrapsServer {
       this.broadcastState();
     } catch (error) {
       this.sendError(socket, errorMessage(error));
+    }
+  }
+
+  private updateDisplayName(socket: WebSocket, displayName: string): void {
+    const playerId = this.playerIdFor(socket);
+    if (!playerId) {
+      this.sendError(socket, "Join the table before changing your name.");
+      return;
+    }
+
+    const player = this.state.players[playerId];
+    const cleanName = sanitizeDisplayName(displayName);
+    if (!player || !cleanName) {
+      this.sendError(socket, "Display name is required.");
+      return;
+    }
+
+    this.state = {
+      ...this.state,
+      players: {
+        ...this.state.players,
+        [playerId]: {
+          ...player,
+          displayName: cleanName
+        }
+      }
+    };
+    this.eventStore.append("display_name_updated", {
+      playerId,
+      displayName: cleanName
+    });
+    this.persistPlayer(playerId);
+    this.persistState();
+    this.broadcastState();
+  }
+
+  private leave(socket: WebSocket): void {
+    const session = this.sessions.get(socket);
+    if (!session?.playerId) {
+      return;
+    }
+
+    const playerId = session.playerId;
+    session.playerId = null;
+    if (!this.hasOpenSessionForPlayer(playerId)) {
+      this.state = disconnectPlayer(this.state, playerId);
+      this.eventStore.append("player_disconnected", { playerId });
+      this.persistState();
+      this.broadcastState();
     }
   }
 

@@ -19,7 +19,14 @@ export type ClientMessage =
       betId: string;
     }
   | {
+      type: "updateDisplayName";
+      displayName: string;
+    }
+  | {
       type: "requestRoll";
+    }
+  | {
+      type: "leave";
     }
   | {
       type: "rebuyChips";

@@ -7,6 +7,7 @@ import { GameState, PlayerState } from "@bubble-craps/shared";
 export type EventLogType =
   | "player_authenticated"
   | "player_joined"
+  | "display_name_updated"
   | "player_disconnected"
   | "bet_placed"
   | "bet_removed"
